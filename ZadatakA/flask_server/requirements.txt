@@ -1,0 +1,15 @@
+distlib==0.3.4
+Flask==2.1.2
+jedi==0.18.1
+jeepney==0.7.1
+numpy==1.22.3
+Pillow==9.0.1
+requests==2.25.1
+requests-oauthlib==1.3.1
+tensorboard==2.8.0
+tensorboard-data-server==0.6.1
+tensorboard-plugin-wit==1.8.1
+tensorflow==2.8.0
+tensorflow-io-gcs-filesystem==0.25.0
+tf-estimator-nightly==2.8.0.dev2021122109
+opencv-python==4.5.4.58
