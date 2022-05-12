@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   flask_server:
-    build: /home/matej/Desktop/Megatrend-Selection/ZadatakA/flask_server
+    build: ./flask_server
     hostname: app
     ports:
       - "5000:5000"

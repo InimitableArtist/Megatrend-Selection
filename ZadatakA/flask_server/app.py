@@ -1,16 +1,17 @@
-from flask import Flask, request, jsonify
-from numpy import base_repr
 import base64
-import json, requests
-from tensorflow.keras.preprocessing import image
-import tensorflow as tf
-import numpy as np
+import json
+
 import cv2
+import numpy as np
+import requests
+import tensorflow as tf
+from flask import Flask, request
 from PIL import Image
+from tensorflow.keras.preprocessing import image
 
 app = Flask(__name__)
 
-url = 'http://172.19.0.2:8501/v1/models/digit_classifier:predict'
+url = 'http://zadataka_tf_serving_1:8501/v1/models/digit_classifier:predict'
 
 
 @app.route('/classify', methods = ['POST'])
@@ -21,14 +22,13 @@ def predict():
         img = base64.b64decode(base64img)
         with open('img_temp.jpg', 'wb') as f:
             f.write(img)
-
+        
         img = cv2.imread('img_temp.jpg', 1)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = cv2.resize(img, (28, 28))
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+     
         img = np.expand_dims(img, -1)
-        
-        
-  
+
         payload = {
             'instances': [{'image_input': img.tolist()}]
         }

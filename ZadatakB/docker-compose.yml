@@ -1,0 +1,29 @@
+version: '3.0'
+services:
+  flask_server_b:
+    build: ./flask_server
+    hostname: app
+    ports:
+      - "5000:5000"
+    networks:
+      - main
+    container_name: soda_app
+    restart: on-failure
+    volumes:
+      - ./flask_server:/flask_server
+  tf_serving:
+    command:
+      - --model_config_file=/models.conf
+    image: tensorflow/serving
+    networks:
+      - main
+    ports:
+      - "8500:8500"
+      - "8501:8501"
+    volumes:
+      - ./soda_classifier:/models
+      - ./soda_classifier/models.conf:/models.conf
+networks:
+  main:
+
+  
