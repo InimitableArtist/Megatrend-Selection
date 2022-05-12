@@ -13,6 +13,8 @@ def create_pickle_file(path):
 
 create_pickle_file(PICKLE_PATH)
 
+
+
 input_tensor = Input(shape = (224, 224, 3), name = 'image_input')
 model = InceptionV3(include_top = False, input_tensor = input_tensor, weights = 'imagenet', pooling = 'avg')
 model.trainable = False
