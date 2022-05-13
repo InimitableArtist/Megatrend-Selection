@@ -83,6 +83,8 @@ def find_similar():
         item_names = np.array(list(data.keys()))
         features = np.array(list(data.values()))
 
+
+        #Find n closest neighbors based on the extracted features, convert distance to similarity score.
         neigh = KNeighborsClassifier(n_neighbors = n).fit(features, item_names)
 
         predictions = neigh.kneighbors(extracted_features.reshape(1, -1))
