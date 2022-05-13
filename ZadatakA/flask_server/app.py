@@ -6,8 +6,6 @@ import numpy as np
 import requests
 import tensorflow as tf
 from flask import Flask, request
-from PIL import Image
-from tensorflow.keras.preprocessing import image
 
 app = Flask(__name__)
 
