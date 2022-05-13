@@ -24,8 +24,9 @@ def predict():
             f.write(img)
         
         img = cv2.imread('img_temp.jpg', 1)
-        img = cv2.resize(img, (28, 28))
+        
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.resize(img, (28, 28))
      
         img = np.expand_dims(img, -1)
 
