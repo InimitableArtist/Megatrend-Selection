@@ -4,7 +4,7 @@ import time
 from tensorflow.keras.applications import InceptionV3
 from tensorflow.keras.layers import Input
 
-PICKLE_PATH = './ZadatakB/flask_server/features_pickle.pkl'
+PICKLE_PATH = './flask_server/features_pickle.pkl'
 
 #Create a pickle file where extracted features will be stored
 def create_pickle_file(path):
@@ -20,5 +20,5 @@ model = InceptionV3(include_top = False, input_tensor = input_tensor, weights = 
 model.trainable = False
 
 ts = int(time.time())
-file_path = "./ZadatakB/soda_classifier/{}/".format(str(ts))
+file_path = "./soda_classifier/{}/".format(str(ts))
 model.save(filepath = file_path, save_format = 'tf')

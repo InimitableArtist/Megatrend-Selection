@@ -23,5 +23,5 @@ def get_similarity(img_path, n):
     print(r.text)
 
 #add_item('gun', './example_images/gun.jpg')
-get_similarity('./example_images/cola_2.jpg', 3)
+get_similarity('./example_images/cola_2.jpg', 1)
 

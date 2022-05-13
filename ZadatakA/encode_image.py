@@ -16,5 +16,5 @@ def send_image(img_path):
     r = requests.post(url, json = json)
     print(r.text)
 
-send_image('3.jpg')
+send_image('./example_images/3.png')
 

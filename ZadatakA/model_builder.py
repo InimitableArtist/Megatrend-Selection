@@ -44,6 +44,6 @@ model.fit(x_train, y_train, batch_size = batch_size, epochs = epochs, validation
 
 
 ts = int(time.time())
-file_path = "./ZadatakB/mnist_classifier/{}/".format(str(ts))
+file_path = "./mnist_classifier/{}/".format(str(ts))
 model.save(filepath = file_path, save_format = 'tf')
 

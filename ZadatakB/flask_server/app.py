@@ -23,6 +23,7 @@ def process_image(img):
 
     return img_data
 
+#Extract features
 def get_features(img):
 
     payload = {
@@ -49,6 +50,7 @@ def add_item():
 
         features = get_features(processed_img)
 
+        #Save the extracted features in a pickled dictionary for future use. 
         with open(PICKLE_PATH, 'rb') as f:
             d = pickle.load(f)
 
