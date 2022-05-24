@@ -24,27 +24,20 @@ def get_similarity(img_path, n):
     r = requests.post(url_similar, json = json)
     print(r.text)
 
-<<<<<<< HEAD
-def add_person(name):
-    PATH = './example_images/' + name + '/'
-    filenames = os.listdir(PATH)
-    for filename in filenames:
-        path = os.path.join(PATH, filename)
-        add_item(name, path)
+#def add_person(name):
+    #PATH = './example_images/' + name + '/'
+    #filenames = os.listdir(PATH)
+    #for filename in filenames:
+        #path = os.path.join(PATH, filename)
+        #add_item(name, path)
 
-#add_person('matej')
-#add_person('matea')
 #add_item('gun', './example_images/gun.jpg')
 #add_item('cola', './example_images/cola.jpg')
+#add_item('cola', './example_images/cola_4.jpg')
 #add_item('cockta', './example_images/cockta.jpg')
 #add_item('fanta', './example_images/fanta.jpg')
 #add_item('sprite', './example_images/sprite.jpg')
 #add_item('face', './example_images/face.jpg')
-#add_item('amber_1', './example_images/slika_1.jpg')
-get_similarity('./example_images/matej_example_1.jpg', 1)
-#add_item('cola', './example_images/cola_4.jpg')
-=======
-#add_item('gun', './example_images/gun.jpg')
-get_similarity('./example_images/cola_2.jpg', 1)
->>>>>>> 1671a3a4afd257d62055c9fc8c67a643a440745f
+get_similarity('./example_images/cola_4.jpg', 1)
+
 
