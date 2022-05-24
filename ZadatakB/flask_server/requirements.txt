@@ -14,3 +14,4 @@ tensorflow-io-gcs-filesystem==0.25.0
 tf-estimator-nightly==2.8.0.dev2021122109
 opencv-python==4.5.4.58
 scikit-learn==1.0.2
+scipy==1.8.1

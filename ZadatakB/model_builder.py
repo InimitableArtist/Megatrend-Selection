@@ -1,7 +1,7 @@
 import pickle
 import time
 
-from tensorflow.keras.applications import InceptionV3
+from tensorflow.keras.applications import InceptionV3, EfficientNetB0
 from tensorflow.keras.layers import Input
 
 PICKLE_PATH = './flask_server/features_pickle.pkl'
@@ -14,10 +14,9 @@ def create_pickle_file(path):
 create_pickle_file(PICKLE_PATH)
 
 
-
 input_tensor = Input(shape = (224, 224, 3), name = 'image_input')
 model = InceptionV3(include_top = False, input_tensor = input_tensor, weights = 'imagenet', pooling = 'avg')
-model.trainable = False
+#model.trainable = False
 
 ts = int(time.time())
 file_path = "./soda_classifier/{}/".format(str(ts))
