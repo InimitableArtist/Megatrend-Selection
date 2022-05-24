@@ -24,6 +24,7 @@ def get_similarity(img_path, n):
     r = requests.post(url_similar, json = json)
     print(r.text)
 
+<<<<<<< HEAD
 def add_person(name):
     PATH = './example_images/' + name + '/'
     filenames = os.listdir(PATH)
@@ -42,4 +43,8 @@ def add_person(name):
 #add_item('amber_1', './example_images/slika_1.jpg')
 get_similarity('./example_images/matej_example_1.jpg', 1)
 #add_item('cola', './example_images/cola_4.jpg')
+=======
+#add_item('gun', './example_images/gun.jpg')
+get_similarity('./example_images/cola_2.jpg', 1)
+>>>>>>> 1671a3a4afd257d62055c9fc8c67a643a440745f
 
