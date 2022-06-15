@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  api:
+    build: ./intro_project
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    hostname: app
+    ports:
+      - "8000:8000"
+    networks:
+      - main
+    container_name: soda_app
+    restart: on-failure
+    volumes:
+      - ./intro_project:/app/src
+  tf_serving:
+    command:
+      - --model_config_file=/models.conf
+    image: tensorflow/serving
+    networks:
+      - main
+    ports:
+      - "8500:8500"
+      - "8501:8501"
+    volumes:
+      - ./intro_project/soda_classifier:/models
+      - ./intro_project/soda_classifier/models.conf:/models.conf
+networks:
+  main:
