@@ -4,6 +4,8 @@ services:
     build: ./intro_project
     command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     hostname: app
+
+    env_file: ./db/.env
     ports:
       - "8000:8000"
     networks:
@@ -12,6 +14,8 @@ services:
     restart: on-failure
     volumes:
       - ./intro_project:/app/src
+
+
   tf_serving:
     command:
       - --model_config_file=/models.conf
@@ -24,5 +28,22 @@ services:
     volumes:
       - ./intro_project/soda_classifier:/models
       - ./intro_project/soda_classifier/models.conf:/models.conf
+
+  db:
+    image: postgres:13.4
+    hostname: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+    env_file:
+      - ./db/.env
+    
+    networks:
+      - main
+    restart: on-failure
+
+volumes:
+  postgres_data:
+
 networks:
   main:

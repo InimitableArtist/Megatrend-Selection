@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
-"""
+"""    
 
 import os
 
@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'bt=pp7^e&4zcw%6+foe#ez!wwr%%z%!32^5kuac#0e46^0im9p'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app'
 ]
 
 MIDDLEWARE = [
@@ -75,8 +76,12 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.environ['POSTGRES_ENGINE'],
+        'NAME': os.environ['POSTGRES_DATABASE'],
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD':os.environ['POSTGRES_PASSWORD'],
+        'HOST': os.environ['POSTGRES_HOST'],
+        'PORT': os.environ['POSTGRES_PORT']
     }
 }
 

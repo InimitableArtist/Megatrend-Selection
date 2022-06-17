@@ -1,34 +1,24 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 import base64
+import io
 import json
 import pickle
+import uuid
+
 import numpy as np
-from numpy.linalg import norm
-import requests
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.inception_v3 import preprocess_input
+from django.http import HttpResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from app.utils import get_features, process_image
+from numpy.linalg import norm
+from PIL import Image
 from sklearn.neighbors import KNeighborsClassifier
+from tensorflow.keras.preprocessing import image
+
+from app.models import Category, Item
 
 PICKLE_PATH = 'features_pickle.pkl'
 
 url = 'http://project_tf_serving_1:8501/v1/models/soda_classifier:predict'
-
-def process_image(img):
-    img_data = image.img_to_array(img)
-    img_data = preprocess_input(img_data)
-    return img_data
-
-def get_features(img):
-    payload = {
-        'instances': [{'image_input': img.tolist()}]
-    }
-
-    r = requests.post(url, json = payload)
-    features = json.loads(r.content)['predictions'][0]
-
-    return features
 
 @csrf_exempt
 def add_item(request):
@@ -38,12 +28,25 @@ def add_item(request):
 
         item_name = data['itemName']
         base64img = data['imageBase64'].encode('utf-8')
+        category_name = data['categoryName']
         img = base64.b64decode(base64img)
 
-        with open('img_temp.jpg', 'wb') as f:
-            f.write(img)
+        try:
+            category = Category.objects.get(name = category_name)
+        except:
+            category_uuid = str(uuid.uuid1())
+            category = Category.objects.create(name = category_name, uuid = category_uuid)
+            category.save()
 
-        img = image.load_img('img_temp.jpg', target_size = (224, 224))
+
+
+        item_uuid = str(uuid.uuid1())
+
+        item = Item.objects.create(uuid = item_uuid, name = item_name, category = category)
+        item.save()
+
+        img_bytes = base64.urlsafe_b64decode(base64img)
+        img = Image.open(io.BytesIO(img_bytes)).convert('RGB')
         processed_img = process_image(img)
 
         features = np.array(get_features(processed_img)).flatten()
@@ -53,13 +56,13 @@ def add_item(request):
         with open(PICKLE_PATH, 'rb') as f:
             d = pickle.load(f)
         
-        if item_name not in d.keys():
-            d[item_name] = [normalized_features, 1]
+        if item_uuid not in d.keys():
+            d[item_uuid] = [normalized_features, 1]
         else:
-            saved_examples = d[item_name][1]
-            f = (d[item_name][0] * saved_examples + normalized_features) / (saved_examples + 1)
-            d[item_name][0] = f
-            d[item_name][1] = saved_examples + 1
+            saved_examples = d[item_uuid][1]
+            f = (d[item_uuid][0] * saved_examples + normalized_features) / (saved_examples + 1)
+            d[item_uuid][0] = f
+            d[item_uuid][1] = saved_examples + 1
 
         with open(PICKLE_PATH, 'wb') as f:
             pickle.dump(d, f)
@@ -105,3 +108,7 @@ def find_similar(request):
         response = [{labels[i]: str(distances[i])} for i in range(len(labels))]
 
         return HttpResponse(json.dumps(response))
+
+@csrf_exempt
+def get_items(request):
+    print('todo...')
