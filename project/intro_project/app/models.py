@@ -14,7 +14,7 @@ class Item(models.Model):
     name = models.CharField(max_length = 150)
     uuid = models.CharField(max_length = 36, unique = True)
 
-    category = models.ForeignKey(Category)
+    category = models.ForeignKey(Category, on_delete = models.CASCADE)
 
     def __str__(self) -> str:
         return self.name

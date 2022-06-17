@@ -13,6 +13,7 @@ from numpy.linalg import norm
 from PIL import Image
 from sklearn.neighbors import KNeighborsClassifier
 from tensorflow.keras.preprocessing import image
+from app.db_serializers import ItemSerializer
 
 from app.models import Category, Item
 
@@ -29,7 +30,6 @@ def add_item(request):
         item_name = data['itemName']
         base64img = data['imageBase64'].encode('utf-8')
         category_name = data['categoryName']
-        img = base64.b64decode(base64img)
 
         try:
             category = Category.objects.get(name = category_name)
@@ -76,13 +76,14 @@ def find_similar(request):
         
         data = json.loads(request.body)
         n = int(data['n'])
+
+
         base64img = data['imageBase64'].encode('utf-8')
-        img = base64.b64decode(base64img)
+        img_bytes = base64.urlsafe_b64decode(base64img)
+        img = Image.open(io.BytesIO(img_bytes)).convert('RGB')
 
-        with open('img_temp.jpg', 'wb') as f:
-            f.write(img)
 
-        img = image.load_img('img_temp.jpg', target_size = (224, 224))
+        processed_img = process_image(img)
         processed_img = process_image(img)
         extracted_features = np.array(get_features(processed_img)).flatten()
         normalized_features = extracted_features / norm(extracted_features)
@@ -91,24 +92,37 @@ def find_similar(request):
 
         with open(PICKLE_PATH, 'rb') as f:
             data = pickle.load(f)
-        item_names = np.array(list(data.keys()))
+        item_uuids= np.array(list(data.keys()))
         features = np.array([i[0] for i in data.values()])
 
 
         #Find n closest neighbors based on the extracted features, convert distance to similarity score.
-        neigh = KNeighborsClassifier(n_neighbors = n).fit(features, item_names)
+        neigh = KNeighborsClassifier(n_neighbors = n).fit(features, item_uuids)
 
         predictions = neigh.kneighbors(normalized_features.reshape(1, -1))
         distances = predictions[0][0]
         distances = [1/(1+d) for d in distances]
 
         indexes = predictions[1][0]
-        labels = [item_names[i] for i in indexes]
+        labels = [Item.objects.get(uuid = item_uuids[i]) for i in indexes]
   
-        response = [{labels[i]: str(distances[i])} for i in range(len(labels))]
+        response = [{str(labels[i]): str(distances[i])} for i in range(len(labels))]
 
         return HttpResponse(json.dumps(response))
 
 @csrf_exempt
 def get_items(request):
-    print('todo...')
+    
+    if request.method == 'GET':
+
+        items = Item.objects.all()
+        data = []
+
+        for item in items:
+            #item_serializer = ItemSerializer(item)
+            data.append({'name': item.name, 'uuid': item.uuid, 'category': item.category.name})
+        return HttpResponse(json.dumps(data))
+
+
+        
+

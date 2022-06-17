@@ -21,5 +21,6 @@ from . import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('item/', views.add_item, name = 'add_item'),
-    url('similar/', views.find_similar, name = 'find_similar')
+    url('similar/', views.find_similar, name = 'find_similar'),
+    url('getitems/', views.get_items, name = 'get_items')
 ]
