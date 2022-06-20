@@ -15,12 +15,19 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.urls import path, register_converter
+#from django.urls.converters import UUIDConverter
 
 from . import views
 
+#register_converter(UUIDConverter, 'uuid')
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url('item/', views.add_item, name = 'add_item'),
-    url('similar/', views.find_similar, name = 'find_similar'),
-    url('getitems/', views.get_items, name = 'get_items')
+    url('items/', views.ListItems.as_view(), name = 'items'),
+    #url('delete/<uuid:uuid>/', views.ListItems.as_view(), name = 'delete')
+    #url('similar/', views.find_similar, name = 'find_similar'),
+    #url('getitems/', views.get_items, name = 'get_items'),
+    #url('delete/<uuid:uuid>/', views.delete_item, name = 'delete_item')
 ]
+   
