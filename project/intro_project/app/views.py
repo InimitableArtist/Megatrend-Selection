@@ -79,25 +79,37 @@ class ListItems(APIView):
         data = []
 
         for item in items:
-            #item_serializer = ItemSerializer(item)
+            
             data.append({'name': item.name, 'uuid': item.uuid, 'category': item.category.name}) 
         return Response(json.dumps(data))
 
     def delete(self, request):
-        #data = json.loads(request.body)
+        
         data = request.data
-        try:
-            item = Item.objects.get(uuid = data['uuid'])
-        except Item.DoesNotExist:
+        if 'uuid' in data.keys():
+
+            try:
+                item = Item.objects.get(uuid = data['uuid'])
+            except Item.DoesNotExist:
+                    return JsonResponse({'message': 'Item does not exist.'}, status = status.HTTP_404_NOT_FOUND)
+
+            item.delete()
+            return JsonResponse({'message': 'Item was deleted successfully.'}, status = status.HTTP_204_NO_CONTENT)
+                
+        elif 'name' in data.keys():
+            item_name = data['name']
+            try:
+                items = Item.objects.filter(name = item_name)
+            except Item.DoesNotExist:
                 return JsonResponse({'message': 'Item does not exist.'}, status = status.HTTP_404_NOT_FOUND)
 
-        item_name = item.name
+            
+            items.delete()
+            delete_embeddings(item_name)
 
-        items = Item.objects.filter(name = item_name)
-
-        items.delete()
-        delete_embeddings(item_name)
-        return JsonResponse({'message': 'Item {0} was deleted successfully.'.format(item_name)}, status = status.HTTP_204_NO_CONTENT)
+            return JsonResponse({'message': 'Item(s) were deleted successfully.'}, status = status.HTTP_204_NO_CONTENT)
+        
+        return Response(status = 400)
 
     def put(self, request):
         data = request.data
