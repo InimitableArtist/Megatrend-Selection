@@ -25,9 +25,6 @@ from . import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('items/', views.ListItems.as_view(), name = 'items'),
-    #url('delete/<uuid:uuid>/', views.ListItems.as_view(), name = 'delete')
-    #url('similar/', views.find_similar, name = 'find_similar'),
-    #url('getitems/', views.get_items, name = 'get_items'),
-    #url('delete/<uuid:uuid>/', views.delete_item, name = 'delete_item')
+    url('categories/', views.ListCategories.as_view(), name = 'categories')
 ]
    

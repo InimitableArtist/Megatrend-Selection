@@ -15,6 +15,11 @@ services:
     volumes:
       - ./intro_project:/app/src
 
+    depends_on:
+      - db
+      - tf_serving
+      - redis
+
 
   tf_serving:
     command:
@@ -41,6 +46,46 @@ services:
     networks:
       - main
     restart: on-failure
+  
+  redis:
+    image: redis:latest
+    hostname: redis
+
+    networks:
+      - main
+  celery:
+    build: ./intro_project
+    restart: on-failure
+    command: celery -A app worker -l info
+    volumes:
+      - ./intro_project:/app/src
+
+    env_file:
+      - ./db/.env
+
+    depends_on:
+      - api
+      - db
+      - redis
+
+    networks:
+      - main
+
+    hostname: celery
+  
+  celery-beat:
+
+    build: ./intro_project
+    command: celery -A core beat -l info
+    volumes: 
+      - ./intro_project/:/app/src/
+
+    env_file:
+      - ./db/.env
+
+    depends_on:
+      - redis
+
 
 volumes:
   postgres_data:
