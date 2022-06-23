@@ -32,7 +32,7 @@ def call_tf_serving(img):
     return features
 
 def get_embeddings(base64img):
-    img_bytes = base64.urlsafe_b64decode(base64img.encode('utf-8'))
+    img_bytes = base64.b64decode(base64img.encode('utf-8'))
     img = Image.open(io.BytesIO(img_bytes)).convert('RGB')
 
     processed_img = process_image(img)

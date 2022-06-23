@@ -1,24 +1,27 @@
 
 import json
+
 import uuid
 
 from django.db.utils import IntegrityError
-from django.http import HttpResponse
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from app.utils import delete_embeddings
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import celery
-from celery.result import AsyncResult
-from app.db_serializers import ItemSerializer
 from app.models import Category, Item
 from app.tasks import classify_similar, extract_features
+from app.utils import delete_embeddings
+from celery.result import AsyncResult
 
+from . import minio_storage
 
 url = 'http://project_tf_serving_1:8501/v1/models/soda_classifier:predict'
+
+BUCKET_NAME = 'thumbnail-images'
+SUFFIX = '.jpg'
 
 
 class ListItems(APIView):
@@ -41,13 +44,15 @@ class ListItems(APIView):
 
             while True:
                 if extract_features_task.status == celery.states.FAILURE:
-                    return Response(status = 500)
+                    return Response('Model error.', status = 500)
                 elif extract_features_task.status == celery.states.SUCCESS:
 
                     item_uuid = str(uuid.uuid1())
+                    img_name = item_uuid + '.jpg'
 
                     item = Item.objects.create(uuid = item_uuid, name = item_name, category = category)
                     item.save()
+                    minio_storage.post(base64img, img_name, BUCKET_NAME)
 
                     return Response(status = 201)
         
@@ -79,9 +84,9 @@ class ListItems(APIView):
         data = []
 
         for item in items:
-            
+            #thumbnail_url = minio_storage.get_url(item.uuid + SUFFIX)
             data.append({'name': item.name, 'uuid': item.uuid, 'category': item.category.name}) 
-        return Response(json.dumps(data))
+        return Response(data)
 
     def delete(self, request):
         
@@ -93,6 +98,8 @@ class ListItems(APIView):
             except Item.DoesNotExist:
                     return JsonResponse({'message': 'Item does not exist.'}, status = status.HTTP_404_NOT_FOUND)
 
+            file_name = item.uuid + SUFFIX
+            minio_storage.delete_photo(file_name)
             item.delete()
             return JsonResponse({'message': 'Item was deleted successfully.'}, status = status.HTTP_204_NO_CONTENT)
                 
@@ -103,7 +110,9 @@ class ListItems(APIView):
             except Item.DoesNotExist:
                 return JsonResponse({'message': 'Item does not exist.'}, status = status.HTTP_404_NOT_FOUND)
 
-            
+            for item in items:
+                file_name = item.uuid + SUFFIX
+                minio_storage.delete_photo(file_name)
             items.delete()
             delete_embeddings(item_name)
 

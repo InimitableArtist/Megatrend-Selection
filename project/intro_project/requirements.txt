@@ -1,5 +1,7 @@
 Django==2.2
+dependency-injector==4.38.0
 djangorestframework==3.13.1
+minio==7.1.9
 Pillow==8.4.0
 sqlparse==0.2.4
 numpy==1.19.5

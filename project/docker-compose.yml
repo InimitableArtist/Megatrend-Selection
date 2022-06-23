@@ -19,6 +19,7 @@ services:
       - db
       - tf_serving
       - redis
+      - minio
 
 
   tf_serving:
@@ -86,9 +87,24 @@ services:
     depends_on:
       - redis
 
+  minio:
+    command: server /data --console-address ":9001"
+    image: quay.io/minio/minio
+    expose:
+      - "9000"
+      - "9001"
+    env_file:
+      - ./db/.env
+    hostname: minio
+    volumes:
+      - minio_data:/data
+    restart: on-failure
+    networks:
+      - main
 
 volumes:
   postgres_data:
+  minio_data:
 
 networks:
   main:

@@ -126,3 +126,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
+
+MINIO_ENDPOINT = f'{os.getenv("MINIO_HOST")}:{os.getenv("MINIO_PORT")}'
+MINIO_ACCESS_KEY = os.getenv('MINIO_ROOT_USER')
+MINIO_SECRET_KEY = os.getenv('MINIO_ROOT_PASSWORD')
+MINIO_SECURE = False
