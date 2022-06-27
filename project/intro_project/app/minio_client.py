@@ -5,6 +5,7 @@ import os
 from datetime import timedelta
 
 from minio import Minio
+from minio.deleteobjects import DeleteError
 
 
 BUCKET_NAME = 'thumbnail-images'
@@ -44,6 +45,8 @@ class MinioThumbnailStorage:
             response.close()
             response.release_conn()
 
+        return response
+
     def get_url(self, file_name, bucket_name = BUCKET_NAME):
         url = self.client.get_presigned_url('GET',
         bucket_name, 
@@ -53,4 +56,7 @@ class MinioThumbnailStorage:
         return url
 
     def delete_photo(self, file_name, bucket_name = BUCKET_NAME):
-        self.client.remove_object(bucket_name = bucket_name, object_name = file_name)
+        try:
+            self.client.remove_object(bucket_name = bucket_name, object_name = file_name)
+        except DeleteError:
+            print('Nothing to delete..')

@@ -3,15 +3,21 @@ import pickle
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 
-from app.utils import get_embeddings
+from app.utils import get_embeddings, run_detector
 
 from .celery import app
+import PIL
 
 PICKLE_PATH = 'features_pickle.pkl'
 
+BOTTLE_LABEL = 44
+
 @app.task
 def extract_features(base64img, item_name):
-    embeddings = get_embeddings(base64img)
+    try:
+        embeddings = get_embeddings(base64img)
+    except PIL.UnidentifiedImageError:
+        return 'FAILED'
 
     with open(PICKLE_PATH, 'rb') as f:
         d = pickle.load(f)
@@ -37,8 +43,15 @@ def classify_similar(base64img, n):
 
     item_names = np.array(list(data.keys()))
     all_embeddings = np.array([i[0] for i in data.values()])
+    
     neigh = KNeighborsClassifier(n_neighbors = n).fit(all_embeddings, item_names)
-    predictions = neigh.kneighbors(current_embeddings.reshape(1, -1))
+    
+    
+    try:
+        predictions = neigh.kneighbors(current_embeddings.reshape(1, -1))
+    except ValueError:
+        return 'FAILED'
+        
     distances = predictions[0][0]
     distances = [1/(1+d) for d in distances]
     indexes = predictions[1][0]

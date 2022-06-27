@@ -13,14 +13,14 @@ services:
     container_name: soda_app
     restart: on-failure
     volumes:
-      - ./intro_project:/app/src
+      - ./intro_project:/src
+      - ./test_images:/src/app/tests/test_images
 
     depends_on:
       - db
       - tf_serving
       - redis
       - minio
-
 
   tf_serving:
     command:
@@ -32,8 +32,9 @@ services:
       - "8500:8500"
       - "8501:8501"
     volumes:
-      - ./intro_project/soda_classifier:/models
-      - ./intro_project/soda_classifier/models.conf:/models.conf
+      - ./intro_project/models/soda_classifier:/models/soda_classifier
+      - ./intro_project/models/soda_detection:/models/soda_detection
+      - ./intro_project/models/models.conf:/models.conf
 
   db:
     image: postgres:13.4
@@ -59,7 +60,7 @@ services:
     restart: on-failure
     command: celery -A app worker -l info
     volumes:
-      - ./intro_project:/app/src
+      - ./intro_project:/src
 
     env_file:
       - ./db/.env
@@ -73,20 +74,7 @@ services:
       - main
 
     hostname: celery
-  
-  celery-beat:
-
-    build: ./intro_project
-    command: celery -A core beat -l info
-    volumes: 
-      - ./intro_project/:/app/src/
-
-    env_file:
-      - ./db/.env
-
-    depends_on:
-      - redis
-
+    
   minio:
     command: server /data --console-address ":9001"
     image: quay.io/minio/minio
@@ -105,6 +93,7 @@ services:
 volumes:
   postgres_data:
   minio_data:
+  
 
 networks:
   main:

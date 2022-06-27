@@ -25,6 +25,8 @@ from . import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url('items/', views.ListItems.as_view(), name = 'items'),
+    url('items/<str:itemName>/', views.ListItems.as_view(), name = 'items_get'),
     url('categories/', views.ListCategories.as_view(), name = 'categories')
+
 ]
    

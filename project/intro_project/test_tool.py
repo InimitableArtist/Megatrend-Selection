@@ -1,11 +1,10 @@
 import base64
-from fileinput import filename
 import requests
-import os
 
-url_add = 'http://localhost:8000/item/'
-url_similar = 'http://localhost:8000/similar/'
-url_all_items = 'http://localhost:8000/getitems/'
+
+url_add = 'http://localhost:8000/items/'
+url_cat = 'http://localhost:8000/categories/'
+
 
 def encode_image(img_path):
     with open(img_path, 'rb') as f:
@@ -22,20 +21,47 @@ def add_item(item_name, img_path, category_name):
 def get_similarity(img_path, n):
     img = encode_image(img_path)
     json = {'imageBase64': img.decode('utf-8'), 'n': str(n)}
-    r = requests.post(url_similar, json = json)
-    print(r.text)
+    r = requests.post(url_add, json = json)
+    print(r.status_code, r.text)
 
 def get_all_items():
-    r = requests.get(url_all_items)
+    r = requests.get(url_add, params = {'itemName': 'nepostojeci item'})
     print(r.text)
 
-#add_item('gun', '../example_images/gun.jpg', 'guns')
-#add_item('cola', '../example_images/cola.jpg', 'gazirani sokovi')
-#add_item('cola', '../example_images/cola_2.jpg', 'gazirani sokovi')
-#add_item('cockta', '../example_images/cockta.jpg', 'alkoholna pica')
-#add_item('fanta', '../example_images/fanta.jpg', 'gazirani sokovi')
-#add_item('sprite', '../example_images/sprite.jpg', 'gazirani sokovi')
-#get_similarity('../example_images/fanta.jpg', 6)
+def delete_item(uuid):
+    #json = {'uuid': uuid}
+    json = {'name' : uuid}
+    r = requests.delete(url_add, json = json)
+    print(r.text)
 
+def update_item(uuid, new_name = '', new_category = '', new_image = ''):
+    if new_category != '':
+        json = {'uuid': uuid, 'name': new_name}
+    elif new_name != '':
+        json = {'uuid': uuid, 'category': new_category}
+    elif new_image != '':
+        img = encode_image(new_image)
+        json = {'uuid': uuid, 'imageBase64': img.decode('utf-8')}
+    r = requests.put(url_add, json = json)
+    print(r.text)
 
-get_all_items()
+def add_category(category_name):
+    json = {'categoryName' : category_name}
+    r = requests.post(url_cat, json = json)
+    print(r.status_code, r.text)
+
+add_category('Gazirana pića')
+add_category('Sokovi u prahu')
+add_category('Alkohol')
+add_item('Coca cola', '../example_images/coca_cola.jpg', 'Gazirana pića')
+add_item('Sprite', '../example_images/sprite.jpg', 'Gazirana pića')
+add_item('Cedevita', '../example_images/cedevita.jpg', 'Sokovi u prahu')
+add_item('Cevitana', '../example_images/cevitana.jpg', 'Sokovi u prahu')
+add_item('Jim Beam', '../example_images/jim_beam.jpg', 'Alkohol')
+add_item('Beefeater', '../example_images/beefeater.jpg', 'Alkohol')
+add_item('Pelin', '../example_images/badel_pelin.png', 'Alkohol')
+
+get_similarity('../example_images/cola_test.jpg', 3)
+
+#get_all_items()
+#delete_item('cola')
