@@ -26,33 +26,16 @@ jobs:
               cat .env
               mv .env project/db
 
+      - name: Check
+        run: docker run
+
       - name: Start containers
         run: 
               docker-compose -f "project/docker-compose.yml" up -d --build
 
-      - name: Check
-        run: docker ps -a
+      - name: Run tests
+        run: docker exec soda_app python manage.py test
 
-  run_django_tests:
-
-    name: Run Django tests        
-    runs-on: ubuntu-latest
-    steps:
-
-    - name: Sleep 120s until the containers are up
-      run: sleep 150
-
-    - name: Run tests
-      run: docker exec soda_app python manage.py test
-
-  shut_docker_down:
-
-    name: Shut docker down
-    runs-on: ubuntu-latest
-    needs: [run_django_tests]
-
-    steps:
-    
-    - uses: actions/checkout@v3
-    - run: docker-compose down --remove-orphans
+      - name: Stop containers
+        run: docker-compose -f "docker-compose.yml" down
 
