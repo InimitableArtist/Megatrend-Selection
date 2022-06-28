@@ -25,6 +25,7 @@ jobs:
               echo MINIO_PORT=${{ secrets.MINIO_PORT }} >> .env
               echo MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }} >> .env
               echo MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }} >> .env
+              cat .env
               mv .env project/db
 
       - name: Start containers
