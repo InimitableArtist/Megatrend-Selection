@@ -27,7 +27,7 @@ jobs:
               mv .env project/db
 
       - name: Check
-        run: docker run
+        run: docker run soda_app
 
       - name: Start containers
         run: 
