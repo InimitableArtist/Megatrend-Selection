@@ -26,6 +26,9 @@ jobs:
               cat .env
               mv .env project/db
 
+      - name: Check
+        run: docker ps -a
+
       - name: Start containers
         run: 
               docker-compose -f "project/docker-compose.yml" up -d --build
