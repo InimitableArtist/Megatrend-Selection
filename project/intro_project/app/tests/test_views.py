@@ -1,5 +1,3 @@
-from sre_parse import CATEGORIES
-from urllib import request, response
 from django.test import TestCase
 from app.views import ListCategories, ListItems
 from rest_framework.test import APIRequestFactory
