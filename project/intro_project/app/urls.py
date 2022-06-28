@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from django.urls import path, register_converter
 #from django.urls.converters import UUIDConverter
 
 from . import views

@@ -14,14 +14,7 @@ class MinioThumbnailStorage:
 
     FORMAT = '.jpg'
     def __init__(self, client):
-        if client is None:
-            self.client = Minio(
-                endpoint = f'{os.getenv("MINIO_IP")}:{os.getenv("MINIO_PORT")}',
-                access_key = os.getenv('MINIO_ROOT_USER'),
-                secret_key = os.getenv('MINIO_ROOT_PASSWORD'),
-                secure = False)
-        else:
-            self.client = client
+        self.client = client
 
     def post(self, base64img, file_name, bucket_name = BUCKET_NAME):
 

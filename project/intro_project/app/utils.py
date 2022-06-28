@@ -46,7 +46,7 @@ def get_embeddings(base64img):
         n_w, n_h = (detection_bbox[3] * w - detection_bbox[1] * w), (detection_bbox[2] * h - detection_bbox[0] * h)
         area = (x, y, x + n_w, y + n_h)
         img = img.crop(area)
-        img.save('cropped.jpg') 
+        #img.save('cropped.jpg') 
 
     processed_img = process_image(img)
     embeddings = np.array(call_tf_serving(processed_img, URL, 'image_input')).flatten()
@@ -73,20 +73,11 @@ def run_detector(img):
     r = requests.post(URL_DETECTION, json = payload)
     result = json.loads(r.content)['predictions'][0]
 
-    
-    
-    
-
     detection_bbox = None
-    #print('score: ', detection_score)
-    #print('label: ', detections_class)
     for i in range(len(result)):
         detections_class = int(result['detection_classes'][i])
         detection_score = result['detection_scores'][i]
-        print('class: ', detections_class)
-        print('score: ', detection_score)
         if detections_class == BOTTLE_LABEL and detection_score > 0.25:
-            print('score_pass: ', detection_score)
             detection_bbox = result['detection_boxes'][i]
             break
     

@@ -1,11 +1,9 @@
 
-import json
 import uuid
 from email.charset import BASE64
 
 from django.db import transaction
 from django.db.utils import IntegrityError
-from django.http.response import JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -41,7 +39,7 @@ class ListItems(APIView):
             try:
                 category = Category.objects.get(name = category_name)
             except Category.DoesNotExist:
-                return JsonResponse({'message': 'Category does not exist.'}, status = status.HTTP_404_NOT_FOUND)
+                return Response('Category does not exist.', status = status.HTTP_404_NOT_FOUND)
 
             
 
@@ -85,7 +83,7 @@ class ListItems(APIView):
                 
                 elif classify_similar_task.status == celery.states.SUCCESS:
                     if classify_similar_task.get() == 'FAILED':
-                            return Response('The requested num of neighbors is greater than max', status = status.HTTP_400_BAD_REQUEST)
+                            return Response('n_neighbors > n_samples', status = status.HTTP_400_BAD_REQUEST)
                     predictions = AsyncResult(classify_similar_task.id).get()
 
             
@@ -106,8 +104,6 @@ class ListItems(APIView):
             items = Item.objects.all() 
         
         response_data = []
-        
-        
 
         for item in items:
             #thumbnail_url = minio_storage.get_url(item.uuid + SUFFIX)
@@ -123,20 +119,20 @@ class ListItems(APIView):
             try:
                 item = Item.objects.get(uuid = data['uuid'])
             except Item.DoesNotExist:
-                    return JsonResponse({'message': 'Item does not exist.'}, status = status.HTTP_404_NOT_FOUND)
+                    return Response('Item does not exist.', status = status.HTTP_404_NOT_FOUND)
 
             file_name = item.uuid + SUFFIX
             minio_storage.delete_photo(file_name)
 
             item.delete()
-            return JsonResponse({'message': 'Item was deleted successfully.'}, status = status.HTTP_204_NO_CONTENT)
+            return Response('Item was deleted successfully.', status = status.HTTP_204_NO_CONTENT)
                 
         elif ITEM_NAME in params:
             item_name = data[ITEM_NAME]
             try:
                 items = Item.objects.filter(name = item_name)
             except Item.DoesNotExist:
-                return JsonResponse({'message': 'Item does not exist.'}, status = status.HTTP_404_NOT_FOUND)
+                return Response('Item does not exist.', status = status.HTTP_404_NOT_FOUND)
 
             for item in items:
                 file_name = item.uuid + SUFFIX
@@ -148,7 +144,7 @@ class ListItems(APIView):
                 #No embeddings saved
                 pass
 
-            return JsonResponse({'message': 'Item(s) were deleted successfully.'}, status = status.HTTP_204_NO_CONTENT)
+            return Response('Item(s) were deleted successfully.', status = status.HTTP_204_NO_CONTENT)
         
         return Response(status = 400)
 
@@ -158,7 +154,7 @@ class ListItems(APIView):
         try:
             item = Item.objects.get(uuid = data['uuid'])
         except Item.DoesNotExist:
-            return JsonResponse({'message': 'Item does not exist.'}, status = status.HTTP_404_NOT_FOUND)
+            return Response('Item does not exist.', status = status.HTTP_404_NOT_FOUND)
 
         if ITEM_NAME in params:
             item.name = data[ITEM_NAME]
@@ -169,7 +165,7 @@ class ListItems(APIView):
                 category = Category.objects.get(name = data[CATEGORY_NAME])
             
             except Category.DoesNotExist:
-                return JsonResponse({'message': 'The category you are trying to update does not exist.'}, status = status.HTTP_404_NOT_FOUND)
+                return Response('The category you are trying to update does not exist.', status = status.HTTP_404_NOT_FOUND)
 
             item.category = category
             item.save()
@@ -196,7 +192,7 @@ class ListItems(APIView):
 
 
             
-        return JsonResponse({'message': 'Item updated.'}, status = 201)
+        return Response('Item updated.', status = 201)
 
 
 
@@ -223,7 +219,7 @@ class ListCategories(APIView):
                 Category.objects.create(uuid = category_uuid, name = category_name)
             
         except IntegrityError:
-            return JsonResponse({'message': 'The category already exists.'}, status = status.HTTP_400_BAD_REQUEST)
+            return Response('The category already exists.', status = status.HTTP_400_BAD_REQUEST)
 
         
-        return JsonResponse({'message': 'Category added.'}, status = 201)
+        return Response('Category added.', status = 201)

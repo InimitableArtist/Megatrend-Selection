@@ -115,13 +115,13 @@ class ItemTestClass(TestCase):
         self.assertEqual(len(response.data), items.count())
 
     #Ovo ne radi iz nekog razloga.
-    #def test_get_invalid_name(self):
-    #    item_name = 'nepostojeci item'
-    #    request = self.factory.get('/items/', params = {'itemName': item_name})
-    #
-    #    response = ListItems.as_view()(request)
-    # 
-    #    self.assertEqual(response.status_code, 404)
+    def test_get_invalid_name(self):
+        item_name = 'nepostojeci item'
+        request = self.factory.get('/items/', params = {'itemName': item_name})
+    
+        response = ListItems.as_view()(request)
+     
+        self.assertEqual(response.status_code, 404)
 
     #DELETE tests
     def test_delete_item_by_uuid(self):
