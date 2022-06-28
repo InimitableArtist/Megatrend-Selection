@@ -40,7 +40,7 @@ jobs:
     steps:
 
     - name: Sleep 120s until the containers are up
-      run: sleep 125s
+      run: sleep 150
 
     - name: Run tests
       run: docker exec soda_app python manage.py test
