@@ -26,12 +26,12 @@ jobs:
               cat .env
               mv .env project/db
 
-      - name: Check
-        run: docker run soda_app
-
       - name: Start containers
         run: 
               docker-compose -f "project/docker-compose.yml" up -d --build
+
+      - name: Check
+        run: docker run soda_app
 
       - name: Run tests
         run: docker exec soda_app python manage.py test
