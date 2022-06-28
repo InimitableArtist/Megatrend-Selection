@@ -39,8 +39,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - name: Sleep 90s until the containers are up
-      run: sleep 90s
+    - name: Sleep 120s until the containers are up
+      run: sleep 125s
 
     - name: Run tests
       run: docker exec soda_app python manage.py test
