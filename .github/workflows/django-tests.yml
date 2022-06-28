@@ -31,7 +31,7 @@ jobs:
               docker-compose -f "project/docker-compose.yml" up -d --build
 
       - name: Check
-        run: docker run soda_app
+        run: docker run project_api
 
       - name: Run tests
         run: docker exec soda_app python manage.py test
