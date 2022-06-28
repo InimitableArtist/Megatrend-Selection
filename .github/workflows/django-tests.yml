@@ -1,0 +1,33 @@
+name: django-tests
+on: 
+  push:
+    branches: [main]
+
+
+env:
+  POSTGRES_ENGINE: ${{ secrets.POSTGRES_ENGINE }}
+  POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+  POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+  POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  MINIO_HOST: ${{ secrets.MINIO_HOST }}
+  MINIO_PORT: ${{ secrets.MINIO_PORT }}
+  MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+  MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+
+jobs:
+  start_docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Start containers
+        uses: actions/checkout@v3
+        run: docker-compose up -d --build
+
+      - name: Run tests
+        run: python manage.py test
+
+
+

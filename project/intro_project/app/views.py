@@ -1,6 +1,5 @@
 
 import uuid
-from email.charset import BASE64
 
 from django.db import transaction
 from django.db.utils import IntegrityError
@@ -40,8 +39,6 @@ class ListItems(APIView):
                 category = Category.objects.get(name = category_name)
             except Category.DoesNotExist:
                 return Response('Category does not exist.', status = status.HTTP_404_NOT_FOUND)
-
-            
 
             if BASE64IMG in params:
                 base64img = data[BASE64IMG]
@@ -187,11 +184,7 @@ class ListItems(APIView):
                     minio_storage.delete_photo(img_name, BUCKET_NAME)
                     minio_storage.post(base64img, img_name, BUCKET_NAME)
                     return Response(status = 201)
-                        
 
-
-
-            
         return Response('Item updated.', status = 201)
 
 
