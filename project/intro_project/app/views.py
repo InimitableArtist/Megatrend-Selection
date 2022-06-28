@@ -108,6 +108,7 @@ class ListItems(APIView):
         return Response(response_data, status = status.HTTP_200_OK)
 
     def delete(self, request):
+
         
         data = request.data
         params = data.keys()
