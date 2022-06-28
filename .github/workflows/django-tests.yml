@@ -3,20 +3,6 @@ on:
   push:
     branches: [main]
 
-
-env:
-  POSTGRES_ENGINE: ${{ secrets.POSTGRES_ENGINE }}
-  POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
-  POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-  POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-  POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-  SECRET_KEY: ${{ secrets.SECRET_KEY }}
-  MINIO_HOST: ${{ secrets.MINIO_HOST }}
-  MINIO_PORT: ${{ secrets.MINIO_PORT }}
-  MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
-  MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
-
 jobs:
   start_docker:
     runs-on: ubuntu-latest
@@ -25,14 +11,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Start containers
+      - name: Create env file
         run:  |
-              echo "${{ secrets.project_envs }}" >> .env
+              touch .env
+              echo POSTGRES_ENGINE=${{ secrets.POSTGRES_ENGINE }} >> .env
+              echo POSTGRES_DATABASE=${{ secrets.POSTGRES_DATABASE }} >> .env
+              echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+              echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
+              echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
+              echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
+              echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+              echo MINIO_HOST=${{ secrets.MINIO_HOST }} >> .env
+              echo MINIO_PORT=${{ secrets.MINIO_PORT }} >> .env
+              echo MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }} >> .env
+              echo MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }} >> .env
               mv .env project/db
+
+      - name: Start containers
+        run: 
               docker-compose -f "project/docker-compose.yml" up -d --build
 
       - name: Run tests
-        run: docker exec -i soda_app python manage.py test app/tests
+        run: docker exec soda_app python manage.py test app/tests
 
       - name: Stop containers
         run: docker-compose -f "docker-compose.yml" down
