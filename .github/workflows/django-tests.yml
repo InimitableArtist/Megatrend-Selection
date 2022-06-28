@@ -32,7 +32,7 @@ jobs:
               docker-compose -f "project/docker-compose.yml" up -d --build
 
       - name: Run tests
-        run: docker exec soda_app python manage.py test app/tests
+        run: docker exec -it soda_app python manage.py test app/tests
 
       - name: Stop containers
         run: docker-compose -f "docker-compose.yml" down
