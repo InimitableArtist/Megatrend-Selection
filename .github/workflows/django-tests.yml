@@ -26,11 +26,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Start containers
-        run: project/docker-compose up -d --build
+        run: docker-compose -f "project/docker-compose.yml" up -d --build
 
       - name: Run tests
         run: python manage.py test
 
       - name: Stop containers
-        run: project/docker-compose down
+        run: docker-compose -f "docker-compose.yml" down
 
