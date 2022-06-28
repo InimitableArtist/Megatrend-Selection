@@ -49,7 +49,7 @@ jobs:
 
     name: Shut docker down
     runs-on: ubuntu-latest
-    needs: [run_django_tests, run_session_tests]
+    needs: [run_django_tests]
 
     steps:
     
