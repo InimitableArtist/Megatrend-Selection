@@ -30,6 +30,8 @@ jobs:
               echo MINIO_ROOT_PASSWORD="${{ secrets.MINIO_ROOT_PASSWORD }}" >> .env
               cat .env
               mv .env project/db
+              cd project/db
+              ls -a
 
       - name: Start containers
         run: 
@@ -37,7 +39,7 @@ jobs:
 
       - name: Check containers
         run:  |
-              sleep 60
+              sleep 15
               docker ps -a
 
       - name: Dump docker logs on failure
