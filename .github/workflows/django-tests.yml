@@ -15,23 +15,20 @@ jobs:
           swap-size-gb: 10
 
       - name: Create env file
-        run:  |
-              touch .env
-              echo POSTGRES_ENGINE="${{ secrets.POSTGRES_ENGINE }}" >> .env
-              echo POSTGRES_DATABASE="${{ secrets.POSTGRES_DATABASE }}" >> .env
-              echo POSTGRES_USER="${{ secrets.POSTGRES_USER }}" >> .env
-              echo POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" >> .env
-              echo POSTGRES_HOST="${{ secrets.POSTGRES_HOST }}" >> .env
-              echo POSTGRES_PORT="${{ secrets.POSTGRES_PORT }}" >> .env
-              echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
-              echo MINIO_HOST="${{ secrets.MINIO_HOST }}" >> .env
-              echo MINIO_PORT="${{ secrets.MINIO_PORT }}" >> .env
-              echo MINIO_ROOT_USER="${{ secrets.MINIO_ROOT_USER }}" >> .env
-              echo MINIO_ROOT_PASSWORD="${{ secrets.MINIO_ROOT_PASSWORD }}" >> .env
-              cat .env
-              mv .env project/db
-              cd project/db
-              ls -a
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          POSTGRES_ENGINE: ${{ secrets.POSTGRES_ENGINE }}
+          POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          MINIO_HOST: ${{ secrets.MINIO_HOST }}
+          MINIO_PORT: ${{ secrets.MINIO_PORT }}
+          MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+          directory: project/db
 
       - name: Start containers
         run: 
