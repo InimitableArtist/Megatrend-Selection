@@ -40,6 +40,9 @@ jobs:
               sleep 60
               docker ps -a
 
+      - name: Dump docker logs on failure
+        uses: jwalton/gh-docker-logs@v1
+
       - name: Run tests
         run: docker exec soda_app python manage.py test
 
