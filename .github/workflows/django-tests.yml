@@ -1,7 +1,7 @@
 name: django-tests
 on: 
   push:
-    branches: [develop]
+    branches: [main]
 
 jobs:
   start_docker:
@@ -9,31 +9,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set Swap Space
-        uses: pierotofy/set-swap-space@master
-        with:
-          swap-size-gb: 10
-
       - name: Create env file
         run:  |
               touch .env
               echo "${{ secrets.MAIN_ENV }}" >> .env
               cat .env
               mv .env project/db
-              cd project/db
-              ls
 
       - name: Start containers
         run: 
               docker-compose -f "project/docker-compose.yml" up -d --build
-
-      - name: Check containers
-        run:  |
-              sleep 30
-              docker ps -a
-
-      - name: Dump docker logs on failure
-        uses: jwalton/gh-docker-logs@v1
 
       - name: Run tests
         run: docker exec soda_app python manage.py test
