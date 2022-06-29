@@ -188,8 +188,6 @@ class ListItems(APIView):
 
         return Response('Item updated.', status = 201)
 
-
-
 class ListCategories(APIView):
 
     def get(self, request):
