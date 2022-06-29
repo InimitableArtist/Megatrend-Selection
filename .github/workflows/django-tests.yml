@@ -17,17 +17,17 @@ jobs:
       - name: Create env file
         uses: SpicyPizza/create-envfile@v1.3
         with:
-          POSTGRES_ENGINE: ${{ secrets.POSTGRES_ENGINE }}
-          POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          MINIO_HOST: ${{ secrets.MINIO_HOST }}
-          MINIO_PORT: ${{ secrets.MINIO_PORT }}
-          MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
-          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
+          envkey_POSTGRES_ENGINE: ${{ secrets.POSTGRES_ENGINE }}
+          envkey_POSTGRES_DATABASE: ${{ secrets.POSTGRES_DATABASE }}
+          envkey_POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          envkey_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          envkey_POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+          envkey_POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          envkey_MINIO_HOST: ${{ secrets.MINIO_HOST }}
+          envkey_MINIO_PORT: ${{ secrets.MINIO_PORT }}
+          envkey_MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+          envkey_MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
           directory: project/db
 
       - name: Start containers
