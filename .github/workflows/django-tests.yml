@@ -1,7 +1,7 @@
 name: django-tests
 on: 
   push:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   start_docker:
