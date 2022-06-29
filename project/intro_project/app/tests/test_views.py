@@ -217,8 +217,6 @@ class ItemTestClass(TestCase):
 
 class CategoryTestClass(TestCase):
 
-
-    
     @classmethod
     def setUpTestData(cls):
         Category.objects.create(name = 'Gazirana pića', 

@@ -5,10 +5,6 @@ on:
 
 jobs:
   start_docker:
-
-      
-
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -38,6 +34,10 @@ jobs:
       - name: Start containers
         run: 
               docker-compose -f "project/docker-compose.yml" up -d --build
+
+      - name: Start memory
+        run:
+              docker stats
 
       - name: Run tests
         run: docker exec soda_app python manage.py test
