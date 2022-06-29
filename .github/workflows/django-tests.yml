@@ -45,6 +45,3 @@ jobs:
       - name: Stop containers
         run: docker-compose -f "project/docker-compose.yml" down
 
-  monitor_memory_usage:
-    runs
-
