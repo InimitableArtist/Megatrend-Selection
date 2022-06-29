@@ -36,7 +36,8 @@ jobs:
               docker-compose -f "project/docker-compose.yml" up -d --build
 
       - name: Check containers
-        run:
+        run:  |
+              sleep 60
               docker ps -a
 
       - name: Run tests
