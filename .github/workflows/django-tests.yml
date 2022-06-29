@@ -35,13 +35,16 @@ jobs:
         run: 
               docker-compose -f "project/docker-compose.yml" up -d --build
 
-      - name: Start memory
+      - name: Check containers
         run:
-              docker stats
+              docker ps -a
 
       - name: Run tests
         run: docker exec soda_app python manage.py test
 
       - name: Stop containers
         run: docker-compose -f "project/docker-compose.yml" down
+
+  monitor_memory_usage:
+    runs
 
